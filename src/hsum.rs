@@ -27,3 +27,23 @@ pub unsafe fn optimized_sum(
 ) -> f32 {
     unsafe { vaddvq_f32(vaddq_f32(vaddq_f32(sum1, sum2), vaddq_f32(sum3, sum4))) }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_hsum() {
+        unsafe {
+            let sum1 = vdupq_n_f32(1.1);
+            let sum2 = vdupq_n_f32(2.2);
+            let sum3 = vdupq_n_f32(3.3);
+            let sum4 = vdupq_n_f32(4.4);
+
+            let baseline = baseline_sum(sum1, sum2, sum3, sum4);
+            let optimized = optimized_sum(sum1, sum2, sum3, sum4);
+
+            assert_eq!(baseline, optimized);
+        }
+    }
+}
