@@ -1,4 +1,4 @@
-# 🧪 Qdrant Performance Lab 
+# Qdrant Performance Lab 🧪
 
 A specialized benchmarking and research environment for high-performance systems programming in Rust. 
 This lab is used to prototype, profile, and verify low-level optimizations before they are integrated into production-grade systems like [Qdrant](https://github.com/qdrant/qdrant).
