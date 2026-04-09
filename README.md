@@ -32,8 +32,9 @@ By isolating core algorithms from the overhead of a full database engine, we can
 
 The lab follows a decoupled structure to ensure that implementation logic remains separate from measurement logic, facilitating easy migration of code into production targets.
 
-- `src/`: Contains core logic, algorithm implementations, and safety documentation.
+- `src/`: Contains core logic, algorithm implementations, safety documentation, and unit tests.
 - `benches/`: Contains the [criterion.rs](https://github.com/bheisler/criterion.rs) measurement suites.
+- `reports/`: Contains latest the benchmarks reports.
 
 ## Current Research Modules
 
