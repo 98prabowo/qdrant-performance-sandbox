@@ -9,15 +9,15 @@ The following results represent the latest stable benchmarks for the aarch64 NEO
 
 | Module             | Benchmark     | Baseline  | Proposed      | Improvement |
 | ------------------ | ------------- | --------- | ------------- | ----------- |
-| **Normalization**  | Small (1536d) | 238.20 ns | **190.10 ns** | +20.2%      |
-| **Normalization**  | Big (1M dims) | 98.81 µs  | **81.15 µs**  | +17.9%      |
-| **Horizontal Sum** | 200 samples   | 1.61 ns   | **1.57 ns**   | +2.5%       |
+| **Horizontal Sum** | 200 samples   | 1.73 ns   | **1.57 ns**   | ~9.2%       |
+| **Normalization**  | Small (1536d) | 234.99 ns | **188.71 ns** | ~19.7%      |
+| **Normalization**  | Big (1M dims) | 88.83 µs  | **77.81 µs**  | ~12.4%      |
 
 ### Environment:
 
 - **Hardware:** Apple M1 (16GB RAM)
 - **Architecture:** `aarch64-apple-darwin`
-- **Compiler:** `rustc 1.91.1`
+- **Compiler:** `rustc 1.94.1`
 
 ## Purpose
 
