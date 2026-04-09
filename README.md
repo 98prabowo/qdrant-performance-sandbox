@@ -34,7 +34,7 @@ The lab follows a decoupled structure to ensure that implementation logic remain
 
 - `src/`: Contains core logic, algorithm implementations, safety documentation, and unit tests.
 - `benches/`: Contains the [criterion.rs](https://github.com/bheisler/criterion.rs) measurement suites.
-- `reports/`: Contains the latest benchmarks reports.
+- `reports/`: Contains latest benchmarks reports.
 
 ## Current Research Modules
 
