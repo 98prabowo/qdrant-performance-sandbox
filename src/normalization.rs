@@ -50,10 +50,8 @@ pub unsafe fn neon_normalization_optimized(vector: &mut [f32], length: f32) {
 
         // Phase 3: The "Hand Tool" (1 float at a time)
         // Finish whatever is left (0 to 3 elements)
-        if i < n {
-            for item in &mut vector[i..] {
-                *item *= inv_length;
-            }
+        for item in vector.iter_mut().take(n).skip(i) {
+            *item *= inv_length;
         }
     }
 }

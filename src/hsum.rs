@@ -25,9 +25,5 @@ pub unsafe fn optimized_sum(
     sum3: float32x4_t,
     sum4: float32x4_t,
 ) -> f32 {
-    unsafe {
-        let sum12 = vaddq_f32(sum1, sum2);
-        let sum34 = vaddq_f32(sum3, sum4);
-        vaddvq_f32(vaddq_f32(sum12, sum34))
-    }
+    unsafe { vaddvq_f32(vaddq_f32(vaddq_f32(sum1, sum2), vaddq_f32(sum3, sum4))) }
 }
