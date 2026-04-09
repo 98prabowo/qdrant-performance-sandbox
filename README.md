@@ -1,11 +1,27 @@
 # Qdrant Performance Lab 🧪
 
-A specialized benchmarking and research environment for high-performance systems programming in Rust. 
+A specialized benchmarking and research environment for high-performance systems programming in Rust.
 This lab is used to prototype, profile, and verify low-level optimizations before they are integrated into production-grade systems like [Qdrant](https://github.com/qdrant/qdrant).
+
+## Performance Results
+
+The following results represent the latest stable benchmarks for the aarch64 NEON optimizations.
+
+| Module             | Benchmark     | Baseline  | Proposed      | Improvement |
+| ------------------ | ------------- | --------- | ------------- | ----------- |
+| **Normalization**  | Small (1536d) | 238.20 ns | **190.10 ns** | +20.2%      |
+| **Normalization**  | Big (1M dims) | 98.81 µs  | **81.15 µs**  | +17.9%      |
+| **Horizontal Sum** | 200 samples   | 1.61 ns   | **1.57 ns**   | +2.5%       |
+
+### Environment:
+
+- **Hardware:** Apple M1 (16GB RAM)
+- **Architecture:** `aarch64-apple-darwin`
+- **Compiler:** `rustc 1.91.1`
 
 ## Purpose
 
-The goal of this project is to provide a "clean room" for performance engineering. 
+The goal of this project is to provide a "clean room" for performance engineering.
 By isolating core algorithms from the overhead of a full database engine, we can:
 
 - **Quantify** the exact latency impact of micro-optimizations.
@@ -42,6 +58,7 @@ We use **Criterion** to ensure statistical rigor. All benchmarks account for:
 - **CPU Warmup:** Ensuring the processor is at peak frequency before measuring.
 - **Outlier Detection:** Identifying OS-level interruptions that could skew data.
 - **Confidence Intervals:** Providing a range of expected performance rather than a single number.
+- **Thermal Management:** Integrated `sleep` intervals between iterations to minimize frequency scaling (throttling) effects during sustained SIMD loads.
 
 To run the full suite:
 
