@@ -5,6 +5,7 @@ use criterion::{Criterion, criterion_group, criterion_main};
 #[cfg(target_arch = "aarch64")]
 mod neon_bench {
     use super::*;
+    use criterion::BatchSize;
     use qdrant_performance_sandbox::hsum_neon::{baseline_sum, optimized_sum};
     use std::arch::aarch64::*;
 
@@ -13,20 +14,43 @@ mod neon_bench {
         group.warm_up_time(Duration::from_secs(5));
         group.sample_size(200);
 
-        unsafe {
-            let sum1 = vdupq_n_f32(1.1);
-            let sum2 = vdupq_n_f32(2.2);
-            let sum3 = vdupq_n_f32(3.3);
-            let sum4 = vdupq_n_f32(4.4);
+        let data = [
+            1.1, 2.2, 3.3, 4.4, 5.5, 6.6, 7.7, 8.8, 9.9, 10.1, 11.2, 12.3, 13.4, 14.5, 15.6, 16.7,
+        ];
 
-            group.bench_function("Baseline", |b| {
-                b.iter(|| black_box(baseline_sum(sum1, sum2, sum3, sum4)));
-            });
+        group.bench_function("Baseline", |b| {
+            b.iter_batched(
+                || unsafe {
+                    (
+                        vld1q_f32(data.as_ptr()),
+                        vld1q_f32(data.as_ptr().add(4)),
+                        vld1q_f32(data.as_ptr().add(8)),
+                        vld1q_f32(data.as_ptr().add(12)),
+                    )
+                },
+                |(sum1, sum2, sum3, sum4)| unsafe {
+                    black_box(baseline_sum(sum1, sum2, sum3, sum4))
+                },
+                BatchSize::SmallInput,
+            );
+        });
 
-            group.bench_function("Proposed", |b| {
-                b.iter(|| black_box(optimized_sum(sum1, sum2, sum3, sum4)));
-            });
-        }
+        group.bench_function("Proposed", |b| {
+            b.iter_batched(
+                || unsafe {
+                    (
+                        vld1q_f32(data.as_ptr()),
+                        vld1q_f32(data.as_ptr().add(4)),
+                        vld1q_f32(data.as_ptr().add(8)),
+                        vld1q_f32(data.as_ptr().add(12)),
+                    )
+                },
+                |(sum1, sum2, sum3, sum4)| unsafe {
+                    black_box(optimized_sum(sum1, sum2, sum3, sum4))
+                },
+                BatchSize::SmallInput,
+            );
+        });
 
         group.finish();
     }
