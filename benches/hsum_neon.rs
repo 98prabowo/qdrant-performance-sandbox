@@ -4,9 +4,9 @@ use std::arch::aarch64::*;
 use std::{hint::black_box, time::Duration};
 
 use criterion::{Criterion, criterion_group, criterion_main};
-use qdrant_performance_sandbox::hsum::{baseline_sum, optimized_sum};
+use qdrant_performance_sandbox::hsum_neon::{baseline_sum, optimized_sum};
 
-fn benchmark_sum(c: &mut Criterion) {
+fn benchmark_sum_neon(c: &mut Criterion) {
     let mut group = c.benchmark_group("Horizontal Sum");
     group.warm_up_time(Duration::from_secs(5));
     group.sample_size(200);
@@ -29,5 +29,5 @@ fn benchmark_sum(c: &mut Criterion) {
     group.finish();
 }
 
-criterion_group!(benches, benchmark_sum);
+criterion_group!(benches, benchmark_sum_neon);
 criterion_main!(benches);

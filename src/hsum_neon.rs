@@ -1,10 +1,9 @@
 #[cfg(target_arch = "aarch64")]
 use std::arch::aarch64::*;
 
-/// # Safety
-///
-/// This function is unsafe because it uses AArch64 NEON intrinsics.
-/// The caller must ensure that the target architecture is aarch64 with NEON support.
+#[cfg(target_feature = "neon")]
+#[allow(clippy::missing_safety_doc)]
+#[inline(always)]
 pub unsafe fn baseline_sum(
     sum1: float32x4_t,
     sum2: float32x4_t,
@@ -14,11 +13,9 @@ pub unsafe fn baseline_sum(
     unsafe { vaddvq_f32(sum1) + vaddvq_f32(sum2) + vaddvq_f32(sum3) + vaddvq_f32(sum4) }
 }
 
-/// # Safety
-///
-/// This function is unsafe because it uses AArch64 NEON intrinsics.
-/// The caller must ensure that the target architecture is aarch64 and that NEON
-/// instructions are available.
+#[cfg(target_feature = "neon")]
+#[allow(clippy::missing_safety_doc)]
+#[inline(always)]
 pub unsafe fn optimized_sum(
     sum1: float32x4_t,
     sum2: float32x4_t,
@@ -28,6 +25,7 @@ pub unsafe fn optimized_sum(
     unsafe { vaddvq_f32(vaddq_f32(vaddq_f32(sum1, sum2), vaddq_f32(sum3, sum4))) }
 }
 
+#[cfg(target_arch = "aarch64")]
 #[cfg(test)]
 mod tests {
     use super::*;

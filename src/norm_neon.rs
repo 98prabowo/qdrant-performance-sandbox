@@ -1,17 +1,16 @@
 #[cfg(target_arch = "aarch64")]
 use std::arch::aarch64::*;
 
-pub fn baseline_normalization(vector: Vec<f32>, length: f32) -> Vec<f32> {
+#[cfg(target_feature = "neon")]
+#[inline(always)]
+pub fn baseline_norm_neon(vector: Vec<f32>, length: f32) -> Vec<f32> {
     vector.into_iter().map(|x| x / length).collect()
 }
 
-/// # Safety
-///
-/// This function is unsafe because it uses SIMD intrinsics and raw pointer manipulation.
-/// The caller must ensure that:
-/// 1. The `vector` slice is not empty.
-/// 2. The CPU supports the NEON instruction set (aarch64).
-pub unsafe fn neon_normalization_optimized(vector: &mut [f32], length: f32) {
+#[cfg(target_feature = "neon")]
+#[allow(clippy::missing_safety_doc)]
+#[inline(always)]
+pub unsafe fn optimized_norm_neon(vector: &mut [f32], length: f32) {
     unsafe {
         let n = vector.len();
         if n == 0 {
@@ -56,6 +55,7 @@ pub unsafe fn neon_normalization_optimized(vector: &mut [f32], length: f32) {
     }
 }
 
+#[cfg(target_arch = "aarch64")]
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -69,8 +69,8 @@ mod tests {
         let vector_scalar = vector_neon.clone();
         let length: f32 = 50.0; // Random normalization factor
 
-        unsafe { neon_normalization_optimized(&mut vector_neon, length) };
-        let vector_res = baseline_normalization(vector_scalar, length);
+        unsafe { optimized_norm_neon(&mut vector_neon, length) };
+        let vector_res = baseline_norm_neon(vector_scalar, length);
 
         for (neon, scalar) in vector_neon.iter().zip(vector_res.iter()) {
             assert!(
@@ -88,7 +88,7 @@ mod tests {
         let length = 2.0;
 
         let slice = &mut vector[1..18];
-        unsafe { neon_normalization_optimized(slice, length) };
+        unsafe { optimized_norm_neon(slice, length) };
 
         assert_eq!(slice[0], 0.5);
         assert_eq!(slice[16], 0.5);
@@ -97,10 +97,10 @@ mod tests {
     #[test]
     fn test_neon_edge_cases() {
         let mut empty: [f32; 0] = [];
-        unsafe { neon_normalization_optimized(&mut empty, 1.0) };
+        unsafe { optimized_norm_neon(&mut empty, 1.0) };
 
         let mut vec = vec![1.0, 2.0];
-        unsafe { neon_normalization_optimized(&mut vec, 0.0) };
+        unsafe { optimized_norm_neon(&mut vec, 0.0) };
         assert!(vec[0].is_infinite())
     }
 
@@ -108,7 +108,7 @@ mod tests {
     fn test_neon_tapering() {
         for size in 1..33 {
             let mut vec = vec![1.0; size];
-            unsafe { neon_normalization_optimized(&mut vec, 2.0) };
+            unsafe { optimized_norm_neon(&mut vec, 2.0) };
             assert!(vec.iter().all(|&x| x == 0.5), "Failed at size {}", size);
         }
     }

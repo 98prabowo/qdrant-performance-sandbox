@@ -60,19 +60,15 @@ We use **Criterion** to ensure statistical rigor. All benchmarks account for:
 - **Confidence Intervals:** Providing a range of expected performance rather than a single number.
 - **Thermal Management:** Integrated `sleep` intervals between iterations to minimize frequency scaling (throttling) effects during sustained SIMD loads.
 
-To run the full suite:
+To run the suite:
 
 ```sh
-make bench
+# Benchmark neon hsum
+make bench-hsum-neon
+
+# Benchmark neon normalization
+make bench-norm-neon
 ```
-
-## Safety & Documentation
-
-Every `unsafe` implementation in this lab is required to include a `/// Safety` section. This section must detail:
-
-1. **Memory Alignment:** Requirements for input pointers.
-1. **Architecture Constraints:** Target features required (e.g., `+neon`, `+avx2`).
-1. **Bounds Checking:** How the implementation prevents out-of-bounds access on remainders.
 
 ## License
 

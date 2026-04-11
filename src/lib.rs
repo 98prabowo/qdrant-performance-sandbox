@@ -1,2 +1,2 @@
-pub mod hsum;
-pub mod normalization;
+pub mod hsum_neon;
+pub mod norm_neon;
