@@ -70,6 +70,24 @@ make bench-hsum-neon
 make bench-norm-neon
 ```
 
+## Remote Benchmarking (GitHub Actions)
+
+You can verify these results on standardized cloud hardware using GitHub Actions.
+This project is configured to run on native **ARM64 (Ubuntu 24.04)** runners, providing a neutral environment (Ampere/Neoverse cores) to compare against local Apple Silicon results.
+
+### How to run:
+
+1. **Fork** this repository.
+2. Go to the **Actions** tab in your fork.
+3. Select the **"ARM64 Performance Benchmark"** workflow on the left sidebar.
+4. Click the **Run workflow** dropdown and select the `main` branch.
+5. Once complete, click on the run to view the logs.
+
+The output will display a side-by-side comparison of the **Baseline** vs. **Proposed** implementations, including statistical analysis of the speedup.
+
+> [!TIP]
+> This is the preferred way to verify PRs, as it eliminates "noise" from local background processes and thermal throttling common on laptop environments.
+
 ## License
 
 This laboratory is licensed under the **Apache License 2.0**. This allows for seamless code sharing with the Qdrant core and other high-performance open-source projects.
