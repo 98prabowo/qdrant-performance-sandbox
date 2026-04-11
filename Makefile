@@ -13,4 +13,6 @@ bench-norm:
 	@$(MAKE) clean
 	@cargo bench --bench norm "Baseline" \
 		&& sleep 10 \
+		&& cargo bench --bench norm "In-Place" \
+		&& sleep 10 \
 		&& cargo bench --bench norm "Proposed" \
