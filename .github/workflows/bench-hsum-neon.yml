@@ -14,4 +14,4 @@ jobs:
 
       - name: Run Horizontal Sum Benchmark
         run: |
-          make bench-hsum-neon
+          make bench-hsum

@@ -1,16 +1,16 @@
-.PHONY: clean, bench-hsum-neon, bench-norm-neon
+.PHONY: clean, bench-hsum, bench-norm
 
 clean:
 	@rm -rf ./target/criterion/
 
-bench-hsum-neon:
+bench-hsum:
 	@$(MAKE) clean
-	@cargo bench --bench hsum_neon "Baseline" \
+	@cargo bench --bench hsum "Baseline" \
 		&& sleep 10 \
-		&& cargo bench --bench hsum_neon "Proposed" \
+		&& cargo bench --bench hsum "Proposed" \
 
-bench-norm-neon:
+bench-norm:
 	@$(MAKE) clean
-	@cargo bench --bench norm_neon "Baseline" \
+	@cargo bench --bench norm "Baseline" \
 		&& sleep 10 \
-		&& cargo bench --bench norm_neon "Proposed" \
+		&& cargo bench --bench norm "Proposed" \

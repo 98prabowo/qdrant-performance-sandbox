@@ -1,11 +1,11 @@
-name: ARM64 Normalization Benchmark
+name: X86_64 AVX Normalization Benchmark
 
 on:
   workflow_dispatch:
 
 jobs:
   benchmark:
-    runs-on: ubuntu-24.04-arm
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
 
@@ -13,5 +13,7 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
 
       - name: Run Normalization Benchmark
+        env:
+          RUSTFLAGS: "-C target-cpu=native"
         run: |
           make bench-norm

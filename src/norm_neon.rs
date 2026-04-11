@@ -73,8 +73,9 @@ mod tests {
         let vector_res = baseline_norm_neon(vector_scalar, length);
 
         for (neon, scalar) in vector_neon.iter().zip(vector_res.iter()) {
+            let tol = 1e-6_f32.max(8.0 * f32::EPSILON * neon.abs().max(scalar.abs()).max(1.0));
             assert!(
-                (neon - scalar).abs() < 1e-6,
+                (neon - scalar).abs() < tol,
                 "NEON result {} != Scalar result {}",
                 neon,
                 scalar

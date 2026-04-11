@@ -9,9 +9,9 @@ edition = "2024"
 criterion = { version = "=0.8.2", features = ["html_reports"] }
 
 [[bench]]
-name = "hsum_neon"
+name = "hsum"
 harness = false
 
 [[bench]]
-name = "norm_neon"
+name = "norm"
 harness = false

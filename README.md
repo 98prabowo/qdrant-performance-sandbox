@@ -63,11 +63,11 @@ We use **Criterion** to ensure statistical rigor. All benchmarks account for:
 To run the suite:
 
 ```sh
-# Benchmark neon hsum
-make bench-hsum-neon
+# Benchmark horizontal sum
+make bench-hsum
 
-# Benchmark neon normalization
-make bench-norm-neon
+# Benchmark normalization
+make bench-norm
 ```
 
 ## Remote Benchmarking (GitHub Actions)
