@@ -3,14 +3,22 @@ use std::arch::x86_64::*;
 
 #[cfg(target_feature = "avx")]
 #[inline(always)]
-pub fn baseline_norm_avx(vector: Vec<f32>, length: f32) -> Vec<f32> {
+pub fn baseline_norm_avx_alloc(vector: Vec<f32>, length: f32) -> Vec<f32> {
     vector.into_iter().map(|x| x / length).collect()
+}
+
+#[cfg(target_feature = "avx")]
+#[inline(always)]
+pub fn baseline_norm_avx_in_place(vector: &mut [f32], length: f32) {
+    for item in vector.iter_mut() {
+        *item /= length;
+    }
 }
 
 #[cfg(target_feature = "avx")]
 #[allow(clippy::missing_safety_doc)]
 #[inline(always)]
-pub unsafe fn optimized_norm_avx(vector: &mut [f32], length: f32) {
+pub unsafe fn optimized_norm_avx_simd(vector: &mut [f32], length: f32) {
     unsafe {
         let n = vector.len();
         if n == 0 {
@@ -66,8 +74,8 @@ mod tests {
         let vector_scalar = vector_avx.clone();
         let length: f32 = 50.0; // Random normalization factor
 
-        unsafe { optimized_norm_avx(&mut vector_avx, length) };
-        let vector_res = baseline_norm_avx(vector_scalar, length);
+        unsafe { optimized_norm_avx_simd(&mut vector_avx, length) };
+        let vector_res = baseline_norm_avx_alloc(vector_scalar, length);
 
         for (neon, scalar) in vector_avx.iter().zip(vector_res.iter()) {
             let tol = 1e-6_f32.max(8.0 * f32::EPSILON * neon.abs().max(scalar.abs()).max(1.0));
@@ -86,7 +94,7 @@ mod tests {
         let length = 2.0;
 
         let slice = &mut vector[1..18];
-        unsafe { optimized_norm_avx(slice, length) };
+        unsafe { optimized_norm_avx_simd(slice, length) };
 
         assert_eq!(slice[0], 0.5);
         assert_eq!(slice[16], 0.5);
@@ -95,10 +103,10 @@ mod tests {
     #[test]
     fn test_avx_edge_cases() {
         let mut empty: [f32; 0] = [];
-        unsafe { optimized_norm_avx(&mut empty, 1.0) };
+        unsafe { optimized_norm_avx_simd(&mut empty, 1.0) };
 
         let mut vec = vec![1.0, 2.0];
-        unsafe { optimized_norm_avx(&mut vec, 0.0) };
+        unsafe { optimized_norm_avx_simd(&mut vec, 0.0) };
         assert!(vec[0].is_infinite())
     }
 
@@ -106,7 +114,7 @@ mod tests {
     fn test_avx_tapering() {
         for size in 1..33 {
             let mut vec = vec![1.0; size];
-            unsafe { optimized_norm_avx(&mut vec, 2.0) };
+            unsafe { optimized_norm_avx_simd(&mut vec, 2.0) };
             assert!(vec.iter().all(|&x| x == 0.5), "Failed at size {}", size);
         }
     }
